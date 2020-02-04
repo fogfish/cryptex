@@ -1,4 +1,32 @@
-# Cryptex: Passing Sensitive Data with JSON
+<p align="center">
+  <h3 align="center">Cryptex</h3>
+  <p align="center"><strong>Passing Sensitive Data with JSON</strong></p>
+
+  <p align="center">
+    <!-- Documentation -->
+    <a href="http://godoc.org/github.com/fogfish/cryptex">
+      <img src="https://godoc.org/github.com/fogfish/cryptex?status.svg" />
+    </a>
+    <!-- Build Status  -->
+    <a href="http://travis-ci.org/fogfish/cryptex">
+      <img src="https://secure.travis-ci.org/fogfish/cryptex.svg?branch=master" />
+    </a>
+    <!-- GitHub -->
+    <a href="http://github.com/fogfish/cryptex">
+      <img src="https://img.shields.io/github/last-commit/fogfish/cryptex.svg" />
+    </a>
+    <!-- Coverage -->
+    <a href="https://coveralls.io/github/fogfish/cryptex?branch=master">
+      <img src="https://coveralls.io/repos/github/fogfish/cryptex/badge.svg?branch=master" />
+    </a>
+    <!-- Go Card -->
+    <a href="https://goreportcard.com/report/github.com/fogfish/cryptex">
+      <img src="https://goreportcard.com/badge/github.com/fogfish/cryptex" />
+    </a>
+  </p>
+</p>
+
+--- 
 
 > The word cryptex is a neologism coined by the author Dan Brown for his 2003 novel The Da Vinci Code, denoting a portable vault used to hide secret messages.
 
@@ -149,3 +177,7 @@ Software engineers are responsible to retain confidentiality of sensitive data i
 You can benefit from this library. It implements semi-auto cipher codec of textual content and custom Algebraic Data Types. Encryption/Decryption process is transparent for developers. It is embedded into `json.Marshal` and `json.Unmarshal` routines so that protection of sensitive data happens during the process of data serialization.
 
 See the complete example [here](example/main.go).
+
+## License
+
+[![See LICENSE](https://img.shields.io/github/license/fogfish/cryptex.svg?style=for-the-badge)](LICENSE)
