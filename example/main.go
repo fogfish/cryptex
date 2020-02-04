@@ -13,15 +13,15 @@ import (
 	"log"
 	"os"
 
+	"github.com/fogfish/cryptex"
 	"github.com/fogfish/cryptex/cipher"
 	"github.com/fogfish/cryptex/example/identity"
-	"github.com/fogfish/golem/crypto"
 )
 
 // User example usage of data type
 type User struct {
 	Identity identity.Cryptex `json:"identity"`
-	About    crypto.String    `json:"about"`
+	About    cryptex.String   `json:"about"`
 }
 
 func main() {
