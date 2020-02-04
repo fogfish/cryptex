@@ -129,7 +129,7 @@ You might experience encryption overhead if multiple fields with sensitive textu
 ```go
 // Just create a package for your ADT. Add the following line to comments.
 // It instructs code generator to parametrize generic algorithm with you data type.
-//go:generate golem -T Identity -generic github.com/fogfish/golem/crypto/crypto.go
+//go:generate golem -T Identity -generic github.com/fogfish/cryptex/cryptex.go
 package identity
 
 // Declare a type as standard golang struct.
