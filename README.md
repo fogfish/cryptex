@@ -103,12 +103,12 @@ cipher.Default.UseKey("alias/mykms/key")
 
 // Do not use built-in `string` type for sensitive data in data structure, which
 // leaves boundaries of your application (e.g. sent to client, stored to disk, etc).
-// Use `crypto.String` instead.
+// Use `cryptex.String` instead.
 type User struct {
   Password cryptex.String `json:"password"`
 }
 
-// The type of `crypto.String` is used as usual to keep your plain text data in memory.
+// The type of `cryptex.String` is used as usual to keep your plain text data in memory.
 // A sensitive value is not assignable to variable of type `string`. You have to either 
 // use helper method `PlainText` e.g. `user.Password.PlainText()` or cast it to string.
 // A simple protection against accidental leakage.
@@ -147,13 +147,13 @@ import (
   ".../identity"
 )
 
-// Do not use plain text type. Use `identity.Crypto` it ensures protection of
+// Do not use plain text type. Use `identity.Cryptex` it ensures protection of
 // sensitive data when it leaves boundaries of your application.
 type User struct {
   Identity identity.Cryptex `json:"identity"`
 }
 
-// `identity.Crypto` is an alias to `identity.Identity` type. Instantiate it with
+// `identity.Cryptex` is an alias to `identity.Identity` type. Instantiate it with
 // same interface as original one.
 user := User{
   Identity: identity.Cryptex{
