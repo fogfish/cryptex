@@ -3,7 +3,7 @@
 //
 // This file may be modified and distributed under the terms
 // of the MIT license.  See the LICENSE file for details.
-// https://github.com/fogfish/golem
+// https://github.com/fogfish/cryptex
 //
 
 package cryptex_test
@@ -11,6 +11,7 @@ package cryptex_test
 import (
 	"encoding/json"
 	"errors"
+	"os"
 	"testing"
 
 	"github.com/aws/aws-sdk-go/service/kms"
@@ -131,6 +132,46 @@ func TestAnyTMarshalFail(t *testing.T) {
 				return err
 			},
 		).Should().Intercept(ErrEncrypt)
+}
+
+func TestSetenv(t *testing.T) {
+	cipher.Default.Mock(mock{})
+	cipher.Default.UseKey("alias/mykms/key")
+
+	err := cryptex.Setenv("SET_KEY", "plaintext")
+	val := os.Getenv("SET_KEY")
+
+	it.Ok(t).
+		If(err).Should().Equal(nil).
+		If(val).Should().Equal("cGxhaW50ZXh0")
+}
+
+func TestSetenvFail(t *testing.T) {
+	cipher.Default.Mock(fail{})
+
+	err := cryptex.Setenv("SET_KEY", "plaintext")
+
+	it.Ok(t).
+		If(err).Should().Be().Like(ErrEncrypt)
+}
+
+func TestGetenv(t *testing.T) {
+	cipher.Default.Mock(mock{})
+	cipher.Default.UseKey("alias/mykms/key")
+
+	os.Setenv("GET_KEY", "cGxhaW50ZXh0")
+
+	it.Ok(t).
+		If(cryptex.Getenv("GET_KEY")).Should().Equal("plaintext")
+}
+
+func TestGetenvFail(t *testing.T) {
+	cipher.Default.Mock(fail{})
+
+	os.Setenv("GET_KEY", "cGxhaW50ZXh0")
+
+	it.Ok(t).
+		If(cryptex.Getenv("GET_KEY")).Should().Equal("")
 }
 
 //

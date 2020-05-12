@@ -3,7 +3,7 @@
 //
 // This file may be modified and distributed under the terms
 // of the MIT license.  See the LICENSE file for details.
-// https://github.com/fogfish/golem
+// https://github.com/fogfish/cryptex
 //
 
 //go:generate golem -T Identity -generic github.com/fogfish/cryptex/cryptex.go
