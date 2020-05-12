@@ -8,7 +8,7 @@
 //
 // This file may be modified and distributed under the terms
 // of the MIT license.  See the LICENSE file for details.
-// https://github.com/fogfish/golem
+// https://github.com/fogfish/cryptex
 //
 
 package identity
@@ -17,7 +17,6 @@ import (
 	"encoding/json"
 
 	"github.com/fogfish/cryptex/cipher"
-	
 )
 
 // AnyT is generic definition of sensitive structures
