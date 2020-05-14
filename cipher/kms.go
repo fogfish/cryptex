@@ -43,7 +43,7 @@ func (c *KMS) UseKey(key string) {
 
 // Decrypt uses AWS KMS API to decrypt cryptotext.
 func (c *KMS) Decrypt(cryptotext string) (plaintext []byte, err error) {
-	bytes, err := base64.StdEncoding.DecodeString(cryptotext)
+	bytes, err := base64.URLEncoding.DecodeString(cryptotext)
 	if err != nil {
 		return
 	}
@@ -72,5 +72,5 @@ func (c *KMS) Encrypt(plaintext []byte) (cryptotext string, err error) {
 		return
 	}
 
-	return base64.StdEncoding.EncodeToString(result.CiphertextBlob), nil
+	return base64.URLEncoding.EncodeToString(result.CiphertextBlob), nil
 }
