@@ -9,8 +9,6 @@
 package cipher
 
 import (
-	"encoding/base64"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/kms"
@@ -24,16 +22,15 @@ type KMS struct {
 }
 
 // NewKMS returns AWS KMS context
-func NewKMS() *KMS {
-	return &KMS{
-		kms.New(session.Must(session.NewSession())),
-		"",
+func NewKMS(api ...kmsiface.KMSAPI) *KMS {
+	if len(api) > 0 {
+		return &KMS{api: api[0], key: ""}
 	}
-}
 
-// Mock replaces instances of AWS KMS API
-func (c *KMS) Mock(api kmsiface.KMSAPI) {
-	c.api = api
+	return &KMS{
+		api: kms.New(session.Must(session.NewSession())),
+		key: "",
+	}
 }
 
 // UseKey defines encryption key
@@ -43,7 +40,7 @@ func (c *KMS) UseKey(key string) {
 
 // Decrypt uses AWS KMS API to decrypt cryptotext.
 func (c *KMS) Decrypt(cryptotext string) (plaintext []byte, err error) {
-	bytes, err := base64.URLEncoding.DecodeString(cryptotext)
+	bytes, err := b64.DecodeString(cryptotext)
 	if err != nil {
 		return
 	}
@@ -72,5 +69,5 @@ func (c *KMS) Encrypt(plaintext []byte) (cryptotext string, err error) {
 		return
 	}
 
-	return base64.URLEncoding.EncodeToString(result.CiphertextBlob), nil
+	return b64.EncodeToString(result.CiphertextBlob), nil
 }

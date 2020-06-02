@@ -9,5 +9,12 @@
 // Package cipher implements crypto algorithms for crypto generic.
 package cipher
 
-// Default is global variable with reference to default cipher.
-var Default = NewKMS()
+import "encoding/base64"
+
+var (
+	// Default is global variable with reference to default cipher.
+	Default = NewKMS()
+
+	// base64url encoding
+	b64 = base64.URLEncoding.WithPadding(base64.NoPadding)
+)
