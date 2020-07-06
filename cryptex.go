@@ -11,6 +11,7 @@ package cryptex
 import (
 	"encoding/json"
 
+	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/fogfish/cryptex/cipher"
 	"github.com/fogfish/golem/generic"
 )
@@ -56,6 +57,17 @@ func (value AnyT) MarshalJSON() (bytes []byte, err error) {
 	}
 
 	return json.Marshal(text)
+}
+
+// MarshalDynamoDBAttributeValue implements automatic encryption of sensitive strings during data marshalling.
+func (value AnyT) MarshalDynamoDBAttributeValue(av *dynamodb.AttributeValue) (err error) {
+	av.B, err = value.MarshalJSON()
+	return
+}
+
+// UnmarshalDynamoDBAttributeValue implements automatic decryption of data
+func (value *AnyT) UnmarshalDynamoDBAttributeValue(av *dynamodb.AttributeValue) error {
+	return value.UnmarshalJSON(av.B)
 }
 
 // PlainText returns plain text value
