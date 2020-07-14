@@ -9,6 +9,7 @@
 package cryptex
 
 import (
+	"encoding/base64"
 	"os"
 
 	"github.com/fogfish/cryptex/cipher"
@@ -19,7 +20,7 @@ import (
 Setenv sets the value of environment variable
 */
 func Setenv(key, value string) error {
-	text, err := cipher.Default.Encrypt([]byte(value))
+	text, err := cipher.Default.Encrypt64(base64.StdEncoding, []byte(value))
 	if err != nil {
 		return err
 	}
@@ -54,7 +55,7 @@ func LookupEnv(key string) (string, bool) {
 		return "", false
 	}
 
-	text, err := cipher.Default.Decrypt(cryptotext)
+	text, err := cipher.Default.Decrypt64(base64.StdEncoding, cryptotext)
 	if err != nil {
 		return "", false
 	}

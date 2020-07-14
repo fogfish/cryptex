@@ -9,6 +9,8 @@
 package cipher
 
 import (
+	"encoding/base64"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/kms"
@@ -40,7 +42,12 @@ func (c *KMS) UseKey(key string) {
 
 // Decrypt uses AWS KMS API to decrypt cryptotext.
 func (c *KMS) Decrypt(cryptotext string) (plaintext []byte, err error) {
-	bytes, err := b64.DecodeString(cryptotext)
+	return c.Decrypt64(b64, cryptotext)
+}
+
+// Decrypt64 uses AWS KMS API to decrypt cryptotext.
+func (c *KMS) Decrypt64(codec *base64.Encoding, cryptotext string) (plaintext []byte, err error) {
+	bytes, err := codec.DecodeString(cryptotext)
 	if err != nil {
 		return
 	}
@@ -59,6 +66,11 @@ func (c *KMS) Decrypt(cryptotext string) (plaintext []byte, err error) {
 
 // Encrypt uses AWS KMS API to encrypt plaintext.
 func (c *KMS) Encrypt(plaintext []byte) (cryptotext string, err error) {
+	return c.Encrypt64(b64, plaintext)
+}
+
+// Encrypt64 uses AWS KMS API to encrypt plaintext.
+func (c *KMS) Encrypt64(codec *base64.Encoding, plaintext []byte) (cryptotext string, err error) {
 	input := &kms.EncryptInput{
 		KeyId:     aws.String(c.key),
 		Plaintext: plaintext,
@@ -69,5 +81,5 @@ func (c *KMS) Encrypt(plaintext []byte) (cryptotext string, err error) {
 		return
 	}
 
-	return b64.EncodeToString(result.CiphertextBlob), nil
+	return codec.EncodeToString(result.CiphertextBlob), nil
 }
