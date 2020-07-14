@@ -64,14 +64,13 @@ Golang has excellent [built-in abstraction](https://blog.golang.org/json-and-go)
 MyADT{Secret: "plaintext"} ⟷ {"secret":"cGxhaW50ZXh0"}
 ```
 
-Semi-automatic encryption can be achieved either using [struct tags](https://medium.com/golangspec/tags-in-golang-3e5db0b8ef3e) or custom types. Struct tags is a feature to annotate algebraic data types but it requires usage of reflection, which do not provide compile type safeness. The library implements final type to encrypt/decrypt strings `cryptex.String` and generic type `cryptex.AnyT`, which allows to handle any application specific algebraic data types.
+Semi-automatic encryption can be achieved either using [struct tags](https://medium.com/golangspec/tags-in-golang-3e5db0b8ef3e) or custom types. Struct tags is a feature to annotate algebraic data types but it requires usage of reflection, which do not provide compile type safeness. This library implements final type to encrypt/decrypt strings `cryptex.String` and generic type `cryptex.AnyT`, which allows to handle any application specific algebraic data types.
 
-### Strings encryption
+### AWS KMS SDK
 
-Use `cryptex.String` to deal with sensitive textual content. Its implementation assumes that binary crypto text is encoded with base64, which makes is usable with any text-based protocols. Crypto binary data is produced either by [AWS KMS SDK](https://docs.aws.amazon.com/sdk-for-go/api/service/kms/) or AWS command line utility. The following code sketches usage of KMS to protect sensitive data. Note: error handling is skipped just to illustrate usage of api  
+Crypto binary data is produced either by [AWS KMS SDK](https://docs.aws.amazon.com/sdk-for-go/api/service/kms/) or AWS command line utility. The following code sketches usage of KMS to protect sensitive data. Note: error handling is skipped just to illustrate usage of api.
 
 ```golang
-//  from example
 func Decrypt(cryptotext string) plaintext []byte {
   bytes, err := base64.StdEncoding.DecodeString(cryptotext)
 	input := &kms.DecryptInput{ CiphertextBlob: []byte(bytes) }
@@ -89,6 +88,10 @@ func Encrypt(plaintext []byte) cryptotext string {
 }
 ```
 
+### Strings encryption
+
+Use `cryptex.String` to deal with sensitive textual content. Its implementation assumes that binary crypto text is encoded with base64url, which makes is usable with any text-based protocols, file names and URLs.
+
 The usage of `cryptex.String` data type in your application is straight forward:
 
 ```go
@@ -99,7 +102,7 @@ import (
 
 // You have to define either KMS key id or its alias if your application needs to
 // encrypt data. You can skip this state if you application only decrypts data.
-cipher.Default.UseKey("alias/mykms/key")
+cipher.Default.UseKey("alias/mykms-key")
 
 // Do not use built-in `string` type for sensitive data in data structure, which
 // leaves boundaries of your application (e.g. sent to client, stored to disk, etc).
@@ -169,6 +172,30 @@ user := User{
 bytes, err := json.Marshal(&user)
 err := json.Unmarshal(bytes, &user)
 ```
+
+### Environment Variables
+
+Usage of Environment Variables is a [common approach](https://12factor.net/config) to store application configuration. Encryption is required to deal with credentials or other sensitive
+data. Use AWS command-line and this library to protect your config:
+
+```bash
+aws kms encrypt \
+  --key-id alias/mykms-key \
+  --plaintext "PlainText" \
+  --query CiphertextBlob \
+  --output text
+
+export MY_CONFIG=...
+```
+
+Cryptex library implements Golang standard semantic (`os` package) to deal with environment 
+variables. It transparently encrypt/decrypt them with KMS key.
+
+```go
+cryptex.Getenv("MY_CONFIG")
+cryptex.LookupEnv("MY_CONFIG")
+```
+
 
 ## Afterwords
 
